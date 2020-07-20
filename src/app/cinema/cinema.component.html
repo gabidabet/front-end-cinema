@@ -1,0 +1,105 @@
+<div class="column">
+  <div class="columns">
+    <div class="column is-2">
+      <div class="panel">
+        <div class="panel-heading">Villes</div>
+        <div *ngIf="villes" id="villes">
+          <div [ngClass]="ville==currentVille?'has-background-info has-text-white':''" class="panel-block"
+            *ngFor="let ville of villes._embedded.villes" (click)="onGetCinemas(ville)">
+            {{ville.nom}}
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="column">
+
+      <div class="panel">
+        <div class="panel-heading">Cinemas</div>
+        <div class="panel"></div>
+        <div class="column">
+          <div class="columns is-multiline is-gapless" *ngIf="cinemas">
+            <div class="column" *ngFor="let cinema of cinemas._embedded.cinemas" (click)="onGetSalles(cinema)">
+              <button
+                [ngClass]="cinema==currentCinema?'button is-info':'button is-success is-light'">{{cinema.nom}}</button>
+            </div>
+          </div>
+        </div>
+        <div class="column" *ngIf="salles">
+          <div class="columns is-multiline">
+            <div class="column is-half" *ngFor="let salle of salles._embedded.salles">
+              <div class="card">
+                <div class="card-header">
+                  <p class="card-header-title">{{salle.nom}}</p>
+                </div>
+                <div class="card-content">
+                  <div class="column">
+                    <div class="columns">
+                      <div class="column is-half">
+                        <div class="image is-3by4">
+                          <img
+                            src="{{'http://localhost:8080/images/'+salle.projections._embedded.projections[0].film.id}}">
+                        </div>
+                      </div>
+                      <div class="column is-half">
+                        <div class="card">
+                          <div class="card-header">
+                            <p class="card-header-title">Seances</p>
+                          </div>
+                          <div class="card-content">
+                            <div class="panel">
+                              <a [ngClass]="p==currentSeance?' has-background-info has-text-white':''"
+                                class="panel-block" *ngFor="let p of salle.projections._embedded.projections"
+                                (click)="onGetTickets(p)">
+                                {{p.seance.heureDebut}}
+                              </a>
+                            </div>
+
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="column"
+                    *ngIf="currentSeance && currentSeance.tickets && currentSeance.salle.id==salle.id">
+                    <div>
+                      <div class="columns is-multiline">
+                        <div class="column" *ngFor="let t of currentSeance.tickets._embedded.tickets">
+                          <button (click)="onSelectTicket(t)" class="{{getTicketStatus(t)}}" [disabled]="t.reserve">
+                            {{t.numero}}
+                          </button>
+                        </div>
+
+                      </div>
+
+
+                    </div>
+                    <div *ngIf="selectedTickets" class="column">
+                      <div *ngIf="selectedTickets.length>0">
+                        <form #form="ngForm" (ngSubmit)="onPayTickets(form.value)">
+                          <div class="field control">
+                            <input class="input" type="text" name="nomClient" placeholder="nom">
+                          </div>
+                          <div class="field control">
+                            <input class="input" type="text" name="codePayement" placeholder="code payement">
+                          </div>
+                          <button type="submit" class="button is-primary">payer</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
